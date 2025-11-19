@@ -1,12 +1,11 @@
 import Coupon from "../models/coupon.model.js";
 import Order from "../models/order.model.js";
-import { razorpay } from "../lib/razorpay.js"; // <-- Import Razorpay
+import { razorpay } from "../lib/razorpay.js"; 
 
 // Use a function to compute HMAC-SHA256 signature for verification
 import crypto from "crypto"; 
 
-// Stripe's coupon logic needs to be completely removed as it's not compatible with Razorpay.
-// We handle the discount logic manually *before* creating the Razorpay order.
+
 
 // Helper function to create a new coupon (keep this, it's independent of payment gateway)
 async function createNewCoupon(userId) {
@@ -54,12 +53,12 @@ export const createCheckoutSession = async (req, res) => {
     
     // Safety check for minimum Razorpay amount (e.g., 100 paise for INR)
     if (totalAmountInCents < 100) totalAmountInCents = 100; 
-    
+    const shortTime = Date.now().toString().slice(-8);
     // 3. Create Razorpay Order
     const options = {
       amount: totalAmountInCents, // Amount in smallest currency unit (paise)
       currency: "INR", // CHANGE CURRENCY TO INR (Razorpay is primarily INR-based)
-      receipt: `receipt_${Date.now()}_${req.user._id.toString()}`,
+      receipt: `ORD_${shortTime}_${req.user._id.toString()}`,
       // Store custom metadata directly on the order to be retrieved later
       notes: {
         userId: req.user._id.toString(),
@@ -106,7 +105,7 @@ export const checkoutSuccess = async (req, res) => {
       userId
     } = req.body;
     
-    // *** SECURITY VERIFICATION STEP (CRUCIAL for Razorpay) ***
+    
     const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
     shasum.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const digest = shasum.digest('hex');
@@ -160,5 +159,3 @@ export const checkoutSuccess = async (req, res) => {
   }
 };
 
-// REMOVE createStripeCoupon - it's no longer needed
-// async function createStripeCoupon(discountPercentage) { ... }

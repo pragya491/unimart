@@ -34,6 +34,7 @@ const orderSchema = new mongoose.Schema(
 		paymentGatewayId: {
 			type: String,
 			unique: true,
+			sparse: true,
 		},
 	},
 	{ timestamps: true }

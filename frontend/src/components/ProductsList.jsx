@@ -77,7 +77,7 @@ const ProductsList = () => {
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<button
 									onClick={() => toggleFeaturedProduct(product._id)}
-									className={`p-1 rounded-full ₹{
+									className={`p-1 rounded-full ${
 										product.isFeatured ? "bg-yellow-400 text-gray-900" : "bg-gray-600 text-gray-300"
 									} hover:bg-yellow-500 transition-colors duration-200`}
 								>

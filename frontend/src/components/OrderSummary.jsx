@@ -5,13 +5,13 @@ import { MoveRight } from "lucide-react";
 
 import axios from "../lib/axios";
 import { useUserStore } from "../stores/useUserStore"; 
-
+import { useNavigate } from "react-router-dom";
 
 
 const OrderSummary = () => {
   const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
   const { user } = useUserStore(); 
-
+  const navigate = useNavigate();
   const savings = subtotal - total;
   const formattedSubtotal = subtotal.toFixed(2);
   const formattedTotal = total.toFixed(2);
@@ -28,7 +28,7 @@ const OrderSummary = () => {
     
     
     var options = {
-      key: "rzp_test_YourKeyID", 
+      key: "rzp_live_RhV7yM2trijXhc", 
       amount: amount * 100, 
       currency: currency,
       name: "UniMart E-commerce",
@@ -52,14 +52,14 @@ const OrderSummary = () => {
 
           if (successRes.data.success) {
              
-             window.location.href = `₹{axios.defaults.baseURL}/purchase-success`; 
+             navigate('/purchase-success');
           } else {
-             window.location.href = `₹{axios.defaults.baseURL}/purchase-cancel`; 
+             navigate('/purchase-cancel');
           }
 
         } catch (error) {
           console.error("Verification Error:", error);
-          window.location.href = `₹{axios.defaults.baseURL}/purchase-cancel`;
+          navigate('/purchase-cancel');
         }
       },
       prefill: {
